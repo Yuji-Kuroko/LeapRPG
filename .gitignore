@@ -1,0 +1,20 @@
+*.pidb
+*.unityproj
+*.sln
+*.userprefs
+*.suo
+
+*.csproj
+*.dll
+*.dll.mdb
+
+.DS_store
+Trash_Data
+
+
+# about dll of LeapMotion
+!Leap.dll
+!LeapCSharp.dll
+!msvcp100.dll
+!msvcr100.dll
+!Assets/
