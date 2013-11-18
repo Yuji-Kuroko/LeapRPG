@@ -6,10 +6,17 @@ public class BattlePlayerController : MonoBehaviour {
 	Controller leapController = new Controller();
 	BattlePlayerMagic playerMagic = new BattlePlayerMagic();
 	public ParticleSystem chargeEffect;
-	
+
+	public GameObject fireBall;
+	public GameObject iceBall;
+	public GameObject thunderBall;
+
 	// Use this for initialization
 	void Start () {
 		playerMagic.SetChargeEffect(chargeEffect);
+		playerMagic.ShotMagic = new BattlePlayerMagic.ShotMagicDelegate(ShotMagic);
+			
+
 	}
 	
 	// Update is called once per frame
@@ -17,6 +24,27 @@ public class BattlePlayerController : MonoBehaviour {
 		Frame frame = leapController.Frame();
 		playerMagic.UpdateFrame(frame);
 	}
+
+
+	public void ShotMagic(BattlePlayerMagic.MagicState magicType)
+	{
+		GameObject magicBall;
+		switch (magicType)
+		{
+		case BattlePlayerMagic.MagicState.MagicFire:
+			magicBall = Instantiate(fireBall) as GameObject;
+			break;
+		case BattlePlayerMagic.MagicState.MagicIce:
+			magicBall = Instantiate(iceBall) as GameObject;
+			break;
+		case BattlePlayerMagic.MagicState.MagicThunder:
+			magicBall = Instantiate(thunderBall) as GameObject;
+			break;
+		}
+
+	}
+
+
 }
 
 public class BattlePlayerMagic {
@@ -47,7 +75,10 @@ public class BattlePlayerMagic {
 		Color.blue,		//	ice
 		Color.yellow,	//	thunder
 	};
-	
+
+	public delegate void ShotMagicDelegate(MagicState magicType);
+	public ShotMagicDelegate ShotMagic;
+
 	int magicPower = 0;
 	MagicState nowMagicState = MagicState.Waiting;
 	
@@ -129,6 +160,7 @@ public class BattlePlayerMagic {
 			//	Shot Magic
 			if (rightHand.z < 0 && leftHand.z < 0)
 			{
+				ShotMagic(nowMagicState);
 				ResetState();
 			}
 			break;
