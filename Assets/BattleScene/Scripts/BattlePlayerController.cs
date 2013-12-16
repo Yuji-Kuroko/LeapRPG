@@ -148,12 +148,18 @@ public class BattlePlayerMagic {
 				(rightHand.z - leftHand.z < -60))
 			{
 					ChangeState(MagicState.MagicFire);
+				break;
 			}
 			//	Ice
 			if (IsRangeInside(rightHand.y, leftHand.y, 60) &&
 				(rightHand.z - leftHand.z > 60))
 			{
 					ChangeState(MagicState.MagicIce);
+				break;
+			}
+			if (IsRangeOutside(rightHand.x, leftHand.x, 230))
+			{
+				ChangeState(MagicState.MagicThunder);
 			}
 			break;
 		default:	//	about Magic group

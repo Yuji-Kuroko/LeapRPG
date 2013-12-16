@@ -52,6 +52,16 @@ public class MoverPlayerController : MonoBehaviour {
 		}
 	}
 
+	void OnTriggerEnter (Collider sender)
+	{
+		Debug.Log("Trigger Enter");
+	}
+
+	void OnTriggerExit (Collider sender)
+	{
+		Debug.Log("Trigger Exit");
+	}
+
 	IEnumerator MoveAction()
 	{
 		isAct = true;
@@ -101,5 +111,7 @@ public class MoverPlayerController : MonoBehaviour {
 	void MoveBack() {
 		transform.Translate(new Vector3(0, 0, MOVE_SPEED));
 	}
+
+
 
 }
