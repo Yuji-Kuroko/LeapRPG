@@ -32,13 +32,13 @@ public class BattlePlayerController : MonoBehaviour {
 		switch (magicType)
 		{
 		case BattlePlayerMagic.MagicState.MagicFire:
-			magicBall = Instantiate(fireBall) as GameObject;
+			magicBall = Instantiate(fireBall, transform.position, transform.rotation) as GameObject;
 			break;
 		case BattlePlayerMagic.MagicState.MagicIce:
-			magicBall = Instantiate(iceBall) as GameObject;
+			magicBall = Instantiate(iceBall, transform.position, transform.rotation) as GameObject;
 			break;
 		case BattlePlayerMagic.MagicState.MagicThunder:
-			magicBall = Instantiate(thunderBall) as GameObject;
+			magicBall = Instantiate(thunderBall, transform.position, transform.rotation) as GameObject;
 			break;
 		}
 

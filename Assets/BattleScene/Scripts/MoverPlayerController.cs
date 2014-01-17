@@ -6,9 +6,14 @@ public class MoverPlayerController : MonoBehaviour {
 
 	public Controller leapController = new Controller();
 
+	public ColliderChecker forwardChecker;
+
 	public static float MOVE_SPEED = 6.0f / 45.0f;
 
 	bool isAct = false;
+
+	public AudioClip SeFootstep;
+
 
 	enum ActType {
 		MoveForward,
@@ -37,8 +42,12 @@ public class MoverPlayerController : MonoBehaviour {
 		Hand hand = frame.Hands[0];
 		if (hand.PalmPosition.z < -10)
 		{
-			nowAct = ActType.MoveForward;
-			StartCoroutine("MoveAction");
+			//	if exist wall for forward, can't forward.
+			if (CanForward())
+			{
+				nowAct = ActType.MoveForward;
+				StartCoroutine("MoveAction");
+			}
 		}
 		else if (hand.PalmPosition.x > 60)
 		{
@@ -64,6 +73,10 @@ public class MoverPlayerController : MonoBehaviour {
 
 	IEnumerator MoveAction()
 	{
+		 if (nowAct == ActType.MoveForward)
+			PlayFootStep();
+
+
 		isAct = true;
 		for (int i = 0; i < 45; i++)
 		{
@@ -106,6 +119,7 @@ public class MoverPlayerController : MonoBehaviour {
 		//Vector3 pos = transform.position;
 		//transform.position = new Vector3(pos.x, pos.y, pos.z + MOVE_SPEED);
 		transform.Translate(new Vector3(0, 0, MOVE_SPEED));
+
 	}
 
 	void MoveBack() {
@@ -113,5 +127,22 @@ public class MoverPlayerController : MonoBehaviour {
 	}
 
 
+
+	bool CanForward() {
+		if (forwardChecker.isBothCollidering && forwardChecker.collisionTag == "Wall")
+			return false;
+		return true;
+	}
+
+	void PlayFootStep() {
+		StartCoroutine("_playFootStep");
+
+	}
+
+	IEnumerator _playFootStep() {
+		audio.PlayOneShot(SeFootstep);
+		yield return new WaitForSeconds(0.4f);
+		audio.PlayOneShot(SeFootstep);
+	}
 
 }
