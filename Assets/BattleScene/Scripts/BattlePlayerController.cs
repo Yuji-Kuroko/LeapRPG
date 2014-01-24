@@ -7,25 +7,89 @@ public class BattlePlayerController : MonoBehaviour {
 	BattlePlayerMagic playerMagic = new BattlePlayerMagic();
 	public ParticleSystem chargeEffect;
 
+	MoverPlayerController moverController;
+
 	public GameObject fireBall;
 	public GameObject iceBall;
 	public GameObject thunderBall;
+
+
+	enum PlayerState {
+		Move,	//	one hand
+		Magic,	//	two hand
+		Sword,	//	one tool
+		None,
+	}
+
+
+	PlayerState nowPlayerState = PlayerState.None;
+	int stateCoolTime = 0;
+
+	const int MAX_STATE_COOL_TIME = 120;
+
 
 	// Use this for initialization
 	void Start () {
 		playerMagic.SetChargeEffect(chargeEffect);
 		playerMagic.ShotMagic = new BattlePlayerMagic.ShotMagicDelegate(ShotMagic);
-			
+		moverController = GetComponent<MoverPlayerController>();
+		moverController.enabled = false;
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		Frame frame = leapController.Frame();
-		playerMagic.UpdateFrame(frame);
+
+		if (stateCoolTime > 0)
+			stateCoolTime--;
+		else
+			UpdatePlayerState(frame);
+	
+		switch (nowPlayerState)
+		{
+			case PlayerState.Magic:
+				playerMagic.UpdateFrame(frame);
+				break;
+		}
+
+	}
+
+	void UpdatePlayerState(Frame frame)
+	{
+		if (frame.Hands.Count == 0)
+			ChangePlayerState(PlayerState.None);
+
+		if (frame.Hands.Count == 1) {
+			ChangePlayerState(PlayerState.Move);
+			moverController.enabled = true;
+		}
+		else
+			moverController.enabled = false;
+
+		if (frame.Hands.Count == 2)
+			ChangePlayerState(PlayerState.Magic);
+		else
+			playerMagic.ResetState();
+	}
+
+	void ChangePlayerState(PlayerState state)
+	{
+		if (nowPlayerState == state)
+			return;
+		stateCoolTime = MAX_STATE_COOL_TIME;
+		if (nowPlayerState == PlayerState.Magic)
+			iTween.MoveBy(GameObject.Find("Hands"), new Vector3(0, -2), 0.5f);
+		else if (state == PlayerState.Magic)
+			iTween.MoveBy(GameObject.Find("Hands"), new Vector3(0, 2), 0.5f);
+
+
+		nowPlayerState = state;
 	}
 
 
+
+	//	called by BattlePlayerMagic
 	public void ShotMagic(BattlePlayerMagic.MagicState magicType)
 	{
 		GameObject magicBall;
@@ -61,12 +125,12 @@ public class BattlePlayerMagic {
 	int[] POWER_TABLE =
 	{
 	//	0,   1,   2     3     4      5
-		0, 20, 60, 180, 300, 1000, 
+		0, 20, 120, 200, 300, 1000, 
 	};
 	
 	int [] PARTICLE_TABLE =
 	{
-		0, 10, 50, 200, 500, 1000,
+		0, 10, 15, 200, 500, 1000,
 	};
 	
 	Color[] MAGIC_COLOR_TABLE =
@@ -166,14 +230,15 @@ public class BattlePlayerMagic {
 			//	Shot Magic
 			if (rightHand.z < 0 && leftHand.z < 0)
 			{
-				ShotMagic(nowMagicState);
+				if (GetPower() > 2)
+					ShotMagic(nowMagicState);
 				ResetState();
 			}
 			break;
 		}
 	}
 	
-	void ResetState() {
+	public void ResetState() {
 		magicPower = 0;
 		nowMagicState = MagicState.Waiting;
 		chargeEffect.emissionRate = 0;
