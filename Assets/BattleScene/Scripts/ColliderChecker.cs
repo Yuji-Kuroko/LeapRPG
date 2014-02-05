@@ -7,6 +7,10 @@ public class ColliderChecker : MonoBehaviour {
 	public bool isCollisioning {get; private set;}
 	public string collisionTag {get; private set;}
 
+	int triggerCount   = 0;
+	int collisionCount = 0;
+	public int wallCount {get; private set;}
+
 	/// <summary>
 	///  if Trigger or Collision are true, this is true. Other is false.
 	/// </summary>
@@ -25,47 +29,53 @@ public class ColliderChecker : MonoBehaviour {
 		isTriggering = false;
 		isCollisioning = false;
 		collisionTag = "";
+		wallCount = 0;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if (triggerCount == 0)
+			isTriggering = false;
+		else
+			isTriggering = true;
+
+		if (collisionCount == 0)
+			isCollisioning = false;
+		else
+			isCollisioning = true;
 	}
 
 	void OnTriggerEnter (Collider sender)
 	{
-		isTriggering = true;
-		try {
-			collisionTag = sender.tag;
-		}
-		catch(UnityException e) {
-			collisionTag = "";
-		}
+		triggerCount++;
+		collisionTag = sender.tag;
+		if (sender.tag == "Wall")
+			wallCount++;
 
 	}
 
 	void OnTriggerExit (Collider sender)
 	{
-		isTriggering = false;
-		collisionTag = "";
+		triggerCount--;
+
+		if (sender.tag == "Wall")
+			wallCount--;
+
 	}
 
 
 	void OnCollisionEnter (Collision sender)
 	{
-		isCollisioning = true;
-		try {
-			collisionTag = sender.collider.tag;
-		}
-		catch (UnityException e) {
-			collisionTag = "";
-		}
+		collisionTag = sender.gameObject.tag;
+		if (sender.gameObject.tag == "Wall")
+			wallCount++;
 	}
 
 	void OnCollisionExit (Collision sender)
 	{
-		isCollisioning = false;
-		collisionTag = "";
+
+		if (sender.gameObject.tag == "Wall")
+			wallCount--;
 	}
 
 
