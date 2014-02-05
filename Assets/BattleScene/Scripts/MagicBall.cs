@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
+
 
 public class MagicBall : MonoBehaviour {
 
@@ -7,6 +9,14 @@ public class MagicBall : MonoBehaviour {
 	{
 		Player, Enemy, Trap
 	}
+	
+	public enum MagicType
+	{
+		Fire, Ice, Thunder
+	}
+
+	[SerializeField]
+	public MagicType magicType;
 
 	public ShooterType shooter { get; private set; }
 	public int magicLevel { get; private set; }

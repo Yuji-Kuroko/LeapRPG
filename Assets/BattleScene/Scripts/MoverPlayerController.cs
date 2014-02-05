@@ -129,7 +129,7 @@ public class MoverPlayerController : MonoBehaviour {
 
 
 	bool CanForward() {
-		if (forwardChecker.isBothCollidering && forwardChecker.wallCount > 0)
+		if (forwardChecker.wallCount > 0)
 			return false;
 		return true;
 	}
