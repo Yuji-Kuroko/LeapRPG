@@ -3,6 +3,9 @@ using System.Collections;
 
 public class ObjectWood : MonoBehaviour {
 
+	public GameObject woodDust;
+
+
 	// Use this for initialization
 	void Start () {
 	
@@ -21,6 +24,8 @@ public class ObjectWood : MonoBehaviour {
 		MagicBall magic = sender.gameObject.GetComponent<MagicBall>();
 		if (magic.magicType == MagicBall.MagicType.Fire)
 		{
+
+			Instantiate(woodDust, transform.position, Quaternion.identity);
 			Destroy(gameObject);
 
 		}
