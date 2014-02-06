@@ -4,6 +4,7 @@ using System.Collections;
 public class ObjectWood : MonoBehaviour {
 
 	public GameObject woodDust;
+	public float Volume = 1.0f;
 
 
 	// Use this for initialization
@@ -25,7 +26,8 @@ public class ObjectWood : MonoBehaviour {
 		if (magic.magicType == MagicBall.MagicType.Fire)
 		{
 
-			Instantiate(woodDust, transform.position, Quaternion.identity);
+			GameObject dust = (GameObject)Instantiate(woodDust, transform.position, Quaternion.identity);
+			dust.audio.volume = Volume;
 			Destroy(gameObject);
 
 		}
